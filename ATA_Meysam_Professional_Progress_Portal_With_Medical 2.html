@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ATA Applicant Progress Portal</title>
+<style>
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:Arial,Helvetica,sans-serif;
+  background:linear-gradient(135deg,#eef5ff,#f8fbff);
+  color:#10233f;
+}
+.login{
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:24px;
+}
+.card{
+  background:#fff;
+  border:2px solid #0b3d91;
+  border-radius:24px;
+  box-shadow:0 24px 70px rgba(11,61,145,.18);
+  padding:38px;
+  width:100%;
+  max-width:520px;
+}
+.logo{
+  width:96px;
+  height:96px;
+  border:4px double #0b3d91;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  margin:0 auto 20px;
+  color:#0b3d91;
+  font-size:32px;
+  font-weight:900;
+  letter-spacing:3px;
+}
+h1,h2{color:#0b3d91;margin-top:0}
+p{color:#5d6f88;line-height:1.7}
+input{
+  width:100%;
+  padding:16px;
+  border:1.5px solid #b7c9e8;
+  border-radius:12px;
+  font-size:16px;
+  text-align:center;
+  margin:14px 0;
+}
+button{
+  width:100%;
+  padding:15px;
+  background:#0b3d91;
+  color:#fff;
+  border:0;
+  border-radius:12px;
+  font-size:16px;
+  font-weight:800;
+  cursor:pointer;
+}
+.error{display:none;color:#b00020;text-align:center;margin-top:12px}
+.hint{
+  margin-top:18px;
+  background:#eef5ff;
+  border-left:5px solid #0b3d91;
+  padding:13px;
+  border-radius:10px;
+  color:#465c78;
+  font-size:14px;
+}
+.hidden{display:none}
+.topbar{
+  background:#0b3d91;
+  color:#fff;
+  padding:24px 42px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+.brand{font-size:38px;font-weight:900;letter-spacing:5px}
+.subtitle{font-size:14px;opacity:.9}
+.logout{width:auto;background:#fff;color:#0b3d91;padding:12px 18px}
+.container{max-width:1120px;margin:0 auto;padding:30px}
+.hero{
+  background:#fff;
+  border:1.5px solid #b7c9e8;
+  border-radius:22px;
+  padding:28px;
+  display:flex;
+  justify-content:space-between;
+  gap:18px;
+  box-shadow:0 12px 32px rgba(12,39,81,.09);
+}
+.badge{
+  align-self:flex-start;
+  background:#fff7e6;
+  color:#8a5a00;
+  border:1px solid #f0c46d;
+  border-radius:999px;
+  padding:12px 16px;
+  font-weight:900;
+}
+.grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:16px;
+  margin:20px 0;
+}
+.box,.panel{
+  background:#fff;
+  border:1.5px solid #b7c9e8;
+  border-radius:18px;
+  padding:22px;
+  box-shadow:0 10px 28px rgba(12,39,81,.08);
+}
+.box span{display:block;color:#667991;font-size:13px;margin-bottom:8px}
+.box strong{color:#0b3d91}
+.progress{
+  height:18px;
+  background:#e5eefc;
+  border-radius:999px;
+  overflow:hidden;
+  margin:16px 0 28px;
+}
+.fill{
+  height:100%;
+  background:linear-gradient(90deg,#0b3d91,#2e65b8);
+  width:52%;
+  border-radius:999px;
+}
+.queue-note{
+  background:#f8fbff;
+  border:1px dashed #9ebfea;
+  border-radius:14px;
+  padding:16px;
+  margin-bottom:22px;
+  color:#405875;
+}
+.timeline{position:relative}
+.step{
+  display:grid;
+  grid-template-columns:42px 1fr;
+  gap:16px;
+  margin-bottom:18px;
+  position:relative;
+}
+.marker{
+  width:34px;
+  height:34px;
+  border-radius:50%;
+  border:3px solid #c4d5ef;
+  background:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:13px;
+  font-weight:900;
+  color:#8aa1c3;
+  margin-top:2px;
+}
+.step.completed .marker{
+  background:#0b3d91;
+  border-color:#0b3d91;
+  color:#fff;
+}
+.step.current .marker{
+  border-color:#c99325;
+  color:#8a5a00;
+  background:#fff7e6;
+  box-shadow:0 0 0 6px #fff1cc;
+}
+.step.pending .marker{
+  background:#f7faff;
+}
+.content{
+  border-left:3px solid #e3ecfb;
+  padding-left:18px;
+  padding-bottom:14px;
+}
+.content h3{margin:0;color:#10233f;font-size:18px}
+.content small{
+  display:inline-block;
+  color:#0b3d91;
+  font-weight:800;
+  margin:8px 0;
+  background:#eef5ff;
+  padding:5px 10px;
+  border-radius:999px;
+}
+.step.current small{
+  color:#8a5a00;
+  background:#fff1cc;
+}
+.content p{margin:6px 0 0}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:20px}
+.doc{display:flex;justify-content:space-between;border-bottom:1px solid #eef2f8;padding:13px 0;gap:20px}
+.doc:last-child{border-bottom:0}
+.status{color:#0b3d91;font-weight:800;text-align:right}
+.note{
+  background:#f2f8ff;
+  border-left:5px solid #0b3d91;
+  padding:14px;
+  border-radius:8px;
+  margin:10px 0;
+  color:#465c78;
+  line-height:1.65;
+}
+@media(max-width:900px){.grid{grid-template-columns:repeat(2,1fr)}.two{grid-template-columns:1fr}.hero{display:block}.badge{display:inline-block;margin-top:10px}}
+@media(max-width:560px){.grid{grid-template-columns:1fr}.topbar{display:block;padding:20px}.logout{margin-top:12px}.container{padding:16px}.step{grid-template-columns:36px 1fr}}
+</style>
+</head>
+
+<body>
+<section id="loginPage" class="login">
+  <div class="card">
+    <div class="logo">ATA</div>
+    <h1 style="text-align:center">Applicant Progress Portal</h1>
+    <p style="text-align:center">Please enter your unique applicant access code to view the official case progress panel.</p>
+    <input id="code" type="password" placeholder="Enter Applicant Code">
+    <button onclick="login()">Access Case Panel</button>
+    <div id="error" class="error">Invalid applicant code. Please try again.</div>
+    <div class="hint">Applicant Code: <b>ATA-IM-MA-2026</b></div>
+  </div>
+</section>
+
+<section id="portalPage" class="hidden">
+  <header class="topbar">
+    <div>
+      <div class="brand">ATA</div>
+      <div class="subtitle">Official Immigration Case Tracking Panel</div>
+    </div>
+    <button class="logout" onclick="logout()">Logout</button>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <div>
+        <h1>MEYSAM ABASZADEH</h1>
+        <p>Case No: ATA-US-2026-MA | Secure applicant progress dashboard</p>
+      </div>
+      <div class="badge">Queued for Final Processing</div>
+    </section>
+
+    <section class="grid">
+      <div class="box"><span>Applicant</span><strong>MEYSAM ABASZADEH</strong></div>
+      <div class="box"><span>Case Category</span><strong>Employment-Based Immigration</strong></div>
+      <div class="box"><span>Current Position</span><strong>In Processing Queue</strong></div>
+      <div class="box"><span>Overall Progress</span><strong>52%</strong></div>
+    </section>
+
+    <section class="panel">
+      <h2>Case Progress Timeline</h2>
+      <div class="progress"><div class="fill"></div></div>
+
+      <div class="queue-note">
+        The applicant file has completed the employer interview phase and is currently positioned in the final documentation and compliance queue. Updates will be reflected as each verification unit releases the file to the next processing stage.
+      </div>
+
+      <div class="timeline">
+        <div class="step completed">
+          <div class="marker">01</div>
+          <div class="content">
+            <h3>Employer Representative Interview</h3>
+            <small>Completed</small>
+            <p>The applicant’s professional profile, employment pathway, and preliminary eligibility details were reviewed with the authorized employer representative. This stage has been completed and recorded in the case file.</p>
+          </div>
+        </div>
+
+        <div class="step current">
+          <div class="marker">02</div>
+          <div class="content">
+            <h3>Final Documentation & Compliance Review</h3>
+            <small>In Queue / Under Review</small>
+            <p>The file is currently placed in the compliance review queue for final verification of employment-related documents, identity records, and case consistency before the next formal processing stage.</p>
+          </div>
+        </div>
+
+        <div class="step current">
+          <div class="marker">03</div>
+          <div class="content">
+            <h3>Secure Document Authentication Process</h3>
+            <small>Awaiting Clearance</small>
+            <p>Original records and supporting documents are being prepared for secure authentication, controlled handling, and verification through the designated documentation channel.</p>
+          </div>
+        </div>
+
+        <div class="step current">
+          <div class="marker">04</div>
+          <div class="content">
+            <h3>Employer Clearance Coordination</h3>
+            <small>Processing Queue</small>
+            <p>The employer-side compliance unit is coordinating the final review and protected dispatch of supporting documentation to the central processing division.</p>
+          </div>
+        </div>
+
+        <div class="step pending">
+          <div class="marker">05</div>
+          <div class="content">
+            <h3>Pre-Consular Preparation Phase</h3>
+            <small>Pending</small>
+            <p>The applicant file will be prepared for the upcoming formal processing procedures after the documentation queue and employer-side clearance steps are completed.</p>
+          </div>
+        </div>
+
+        <div class="step pending">
+          <div class="marker">06</div>
+          <div class="content">
+            <h3>Medical Examination & Panel Physician Assessment</h3>
+            <small>Pending</small>
+            <p>The applicant will complete the required medical examination through an authorized panel physician, including blood testing, vaccination review, X-Ray / radiology screening, and general medical assessment prior to the formal identity and case review stages.</p>
+          </div>
+        </div>
+
+        <div class="step pending">
+          <div class="marker">07</div>
+          <div class="content">
+            <h3>Biometric & Identity Verification</h3>
+            <small>Pending</small>
+            <p>Fingerprint registration and official identity verification will be completed during the scheduled processing phase.</p>
+          </div>
+        </div>
+
+        <div class="step pending">
+          <div class="marker">08</div>
+          <div class="content">
+            <h3>Official Review & Case Evaluation</h3>
+            <small>Pending</small>
+            <p>The case will undergo official review and internal assessment after completion of the required identity and documentation verification stages.</p>
+          </div>
+        </div>
+
+        <div class="step pending">
+          <div class="marker">09</div>
+          <div class="content">
+            <h3>Final Decision & Entry Authorization</h3>
+            <small>Pending</small>
+            <p>Final approval status and entry authorization will be updated after completion of all required verification and review procedures.</p>
+          </div>
+        </div>
+
+        <div class="step pending">
+          <div class="marker">10</div>
+          <div class="content">
+            <h3>Post-Approval Coordination</h3>
+            <small>Pending</small>
+            <p>Travel preparation, onboarding coordination, and settlement guidance will be initiated after approval confirmation.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="two">
+      <div class="panel">
+        <h2>Applicant Instructions</h2>
+        <div class="note">Remain available for case coordination and employer-side compliance communication.</div>
+        <div class="note">Keep original identity and employment documents ready for verification and secure dispatch procedures.</div>
+        <div class="note">Do not submit duplicate documents or take independent action unless instructed by the case coordinator.</div>
+      </div>
+
+      <div class="panel">
+        <h2>Document Status</h2>
+        <div class="doc"><span>Passport & Identity Records</span><span class="status">In Queue</span></div>
+        <div class="doc"><span>Employment Background Records</span><span class="status">Under Review</span></div>
+        <div class="doc"><span>Employer Verification File</span><span class="status">Processing</span></div>
+        <div class="doc"><span>Pre-Processing Documents</span><span class="status">Pending</span></div>
+        <div class="doc"><span>Biometric Confirmation</span><span class="status">Pending</span></div>
+      </div>
+    </section>
+  </main>
+</section>
+
+<script>
+const VALID_CODE = "ATA-IM-MA-2026";
+
+function login(){
+  const code = document.getElementById("code").value.trim().toUpperCase();
+  if(code === VALID_CODE){
+    document.getElementById("loginPage").classList.add("hidden");
+    document.getElementById("portalPage").classList.remove("hidden");
+    sessionStorage.setItem("ata_ma_access","granted");
+  } else {
+    document.getElementById("error").style.display = "block";
+  }
+}
+
+function logout(){
+  sessionStorage.removeItem("ata_ma_access");
+  document.getElementById("portalPage").classList.add("hidden");
+  document.getElementById("loginPage").classList.remove("hidden");
+}
+
+if(sessionStorage.getItem("ata_ma_access") === "granted"){
+  document.getElementById("loginPage").classList.add("hidden");
+  document.getElementById("portalPage").classList.remove("hidden");
+}
+</script>
+</body>
+</html>
